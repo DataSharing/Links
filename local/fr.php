@@ -1,0 +1,34 @@
+<?php
+
+if (!defined('dashboard')) define('dashboard','Tableau de bord');
+if (!defined('shortcuts')) define('shortcuts','Raccourcis');
+if (!defined('shortcut')) define('shortcut','Raccourci');
+if (!defined('users')) define('users','Utilisateurs');
+if (!defined('user')) define('user','Utilisateur');
+if (!defined('logout')) define('logout','Déconnexion');
+if (!defined('add')) define('add','Ajouter');
+if (!defined('search')) define('search','Rechercher');
+if (!defined('surname')) define('surname','Nom');
+if (!defined('firstname')) define('firstname','Prénom');
+if (!defined('your_search')) define('your_search','Tapez votre recherche...');
+if (!defined('add_shortcut')) define('add_shortcut','Ajouter un raccourci');
+if (!defined('add_user')) define('add_user','Ajouter un utilisateur');
+if (!defined('create')) define('create','Créé le');
+if (!defined('modified')) define('modified','et modifié le');
+if (!defined('close')) define('close','Fermer');
+if (!defined('delete')) define('delete','Supprimer');
+if (!defined('save')) define('save','Enregistrer');
+if (!defined('password')) define('password','Mot de passe');
+if (!defined('password_confirmation')) define('password_confirmation','Confirmation du mot de passe');
+if (!defined('reset_password')) define('reset_password','Réinitialiser le mot de passe');
+if (!defined('reset')) define('reset','Réinitialiser');
+if (!defined('permission_to_access')) define('permission_to_access','Droit d\'accès');
+if (!defined('language')) define('language','Langue');
+if (!defined('created_by')) define('created_by','Créé par');
+if (!defined('history')) define('history','Historique');
+if (!defined('country')) define('country','Pays');
+if (!defined('zip')) define('zip','Code postal');
+if (!defined('no_results')) define('no_results','Aucun résultat...');
+if (!defined('delete_definitively')) define('delete_definitively','Supprimer définitivement');
+if (!defined('confirmation_delete_shortcut')) define('confirmation_delete_shortcut','Etes-vous sûr de vouloir supprimer le raccourci?');
+if (!defined('confirmation_delete_user')) define('confirmation_delete_user','Etes-vous sûr de vouloir supprimer l\'utilisateur?');
