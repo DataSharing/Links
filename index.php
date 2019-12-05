@@ -1,4 +1,4 @@
-/*
+<!--
  * @version 1.0
  -------------------------------------------------------------------------
  Links
@@ -17,7 +17,7 @@
  along with Links. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  * @author Walid H. <datasharing7@gmail.com>
- */
+ -->
 
 <?php include __DIR__ . '/class/controller.class.php'; ?>
 <!doctype html>
