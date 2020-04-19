@@ -21,7 +21,7 @@
                 </a>
                 <button type="button" data-toggle="modal" data-target="#history" class="btn btn-sm btn-dark">
                     <i class='fas fa-history'></i> <?= history; ?>
-                    <span class="badge badge-light"><?= $data['nb'];?></span>
+                    <span class="badge badge-light"><?= $data['nb']; ?></span>
                 </button>
                 <button type="submit" name="submit" value="enregistrer" class="btn btn-sm btn-success">
                     <i class='fas fa-hdd'></i> <?= save; ?>
@@ -52,8 +52,57 @@
                 </div>
             </div>
         </form>
+        <hr>
+        <form action="" method="post">
+            <div class="btn-group btn-group-toggle">
+                <a href='<?= $data['site_url']; ?>/shortcuts?id=<?= $data['id'] . "&vue=jour"; ?>' class="btn btn-sm btn-primary <?php if ($data['vue'] == 'jour') echo 'active'; ?>">
+                    Jour
+                </a>
+                <a href='<?= $data['site_url']; ?>/shortcuts?id=<?= $data['id'] . "&vue=mois"; ?>' class="btn btn-sm btn-primary <?php if ($data['vue'] == 'mois') echo 'active'; ?>">
+                    Mois
+                </a>
+                <a href='<?= $data['site_url']; ?>/shortcuts?id=<?= $data['id'] . "&vue=annee"; ?>' class="btn btn-sm btn-primary <?php if ($data['vue'] == 'annee') echo 'active'; ?>">
+                    Année
+                </a>
+            </div>
+            <div class="btn-group btn-group-toggle float-right">
+                <button type="submit" name="ip_unique_oui" class='btn btn-sm btn-primary <?php if ($_SESSION['ip_unique'] == 'active') echo 'active'; ?>'>
+                    ip unique
+                </button>
+                <button type="submit" name="ip_unique_non" class='btn btn-sm btn-primary <?php if ($_SESSION['ip_unique'] == '') echo 'active'; ?>'>
+                    Toutes les ip
+                </button>
+            </div>
+        </form>
+        <canvas id="stats" height="100"></canvas>
     </div>
 </div>
+
+<script>
+    var ctx = document.getElementById('stats').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [<?= $data['labels']; ?>],
+            datasets: [{
+                label: <?= $data['label']; ?>,
+                data: [<?= $data['data_graph']; ?>],
+                backgroundColor: 'transparent',
+                borderColor: '#0069d9',
+                borderWidth: 3
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
 
 <div class="modal bd-example-modal-xl" id="history" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -63,7 +112,7 @@
                     <tr>
                         <th><?= country; ?></th>
                         <th>Region</th>
-                        <th><?= zip;?></th>
+                        <th><?= zip; ?></th>
                         <th>ip</th>
                         <th>Date</th>
                     </tr>

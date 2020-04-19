@@ -2,10 +2,13 @@
 
 class Shortcuts extends Controller
 {
+    public $site_url;
     const shortcutsNoAutorized = ['dashboard', 'shortcuts', 'users', 'login', 'profil'];
 
     public function __construct()
     {
+        include __DIR__ . '/../config/app.php';
+        $this->site_url = $app['site_url'];
         $this->traitement();
     }
 
@@ -68,6 +71,14 @@ class Shortcuts extends Controller
                     $this->view('app/error', 'Erreur de suppression du raccourci!');
                 }
             }
+
+            if (isset($_POST['ip_unique_oui'])) {
+                $_SESSION['ip_unique'] = 'active';
+            }
+
+            if (isset($_POST['ip_unique_non'])) {
+                $_SESSION['ip_unique'] = '';
+            }
         }
     }
 
@@ -103,6 +114,11 @@ class Shortcuts extends Controller
     public function shortcutForm($id)
     {
         global $DB;
+        if (!isset($_SESSION['ip_unique'])) $_SESSION['ip_unique'] = 'active';
+
+        $data['id'] = $id;
+        $data['site_url'] = $this->site_url;
+        $data['vue'] = isset($_GET['vue']) ? htmlentities($_GET['vue']) : 'annee';
 
         $requete = $DB->prepare('select * from shortcuts where id=' . $id);
         $requete->execute();
@@ -115,7 +131,66 @@ class Shortcuts extends Controller
         $data['nb'] = $requete_1->rowCount();
         $data['historique'] = $requete_1->fetchall();
 
+        //Graphique
+        $data['data_graph'] = "";
+
+        if ($data['vue'] == "annee") {
+            //// Vue année ////
+            $x_label = 12;
+            $distinct = '';
+            if ($_SESSION['ip_unique'] == 'active') $distinct = 'distinct ';
+            $group_by = 'GROUP BY MONTH(date_redirect)';
+            $data['label'] = "'Nombre de redirection'";
+            $data['labels'] = "'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'";
+            $data_graph_query = 'select MONTH(date_redirect) as x,COUNT(' . $distinct . 'ip) as nb FROM stats 
+            WHERE id_url = ' . intval($id) . ' and YEAR(date_redirect) = ' . date('Y') . ' ' . $group_by;
+        }
+
+        if ($data['vue'] == "mois") {
+            //// Vue mois ////
+            $x_label = date('t');
+            $distinct = '';
+            $group_by = 'GROUP BY DAY(date_redirect)';
+            if ($_SESSION['ip_unique'] == 'active') $distinct = 'distinct ';
+            $data['label'] = "'Nombre de redirection'";
+            $data['labels'] = "";
+            for ($i = 1; $i <= $x_label; $i++) {
+                $data['labels'] = $data['labels'] . "'" . sprintf('%02d', $i) . "-" . date('m') . "',";
+            }
+            $data_graph_query = 'select  DAY(date_redirect) as x,COUNT(' . $distinct . 'ip) as nb FROM stats 
+            WHERE id_url = ' . intval($id) . ' and MONTH(date_redirect) = ' . date('m') . ' and YEAR(date_redirect) = ' . date('Y') . ' ' . $group_by;
+        }
+
+        if ($data['vue'] == "jour") {
+            //// Vue mois ////
+            $x_label = 23;
+            $distinct = '';
+            $group_by = 'GROUP BY HOUR(date_redirect)';
+            if ($_SESSION['ip_unique'] == 'active') $distinct = 'distinct ';
+            $data['label'] = "'Nombre de redirection'";
+            $data['labels'] = "";
+            for ($i = 1; $i <= $x_label; $i++) {
+                $data['labels'] = $data['labels'] . "'" . sprintf('%02d', $i) . "h00',";
+            }
+            $data_graph_query = 'select HOUR(date_redirect) as x,COUNT(' . $distinct . 'ip) as nb FROM stats 
+            WHERE id_url = ' . intval($id) . ' and DAY(date_redirect) = ' . date('d') . ' and MONTH(date_redirect) = ' . date('m') . ' and YEAR(date_redirect) = ' . date('Y') . ' ' . $group_by;
+        }
+
+        $data_graph_query = $DB->prepare($data_graph_query);
+        $data_graph_query->execute();
+
+        foreach ($data_graph_query->fetchall() as $d) {
+            $data_graph_mois[$d['x']] = $d['nb'];
+        }
+
+        for ($i = 1; $i <= $x_label; $i++) {
+            if (isset($data_graph_mois[$i])) {
+                $data['data_graph'] = $data['data_graph'] . $data_graph_mois[$i] . ",";
+            } else {
+                $data['data_graph'] = $data['data_graph'] . "0,";
+            }
+        }
+
         $this->view('shortcuts/shortcut', $data);
     }
-
 }
